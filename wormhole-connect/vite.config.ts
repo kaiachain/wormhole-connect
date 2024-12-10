@@ -115,7 +115,6 @@ let output = {
 
 let external = [
   // TODO figure out why these have to be here. build fails without it
-  '@particle-network/solana-wallet',
   '@particle-network/auth',
 ];
 

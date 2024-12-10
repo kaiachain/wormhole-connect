@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { isHexString } from 'ethers';
-import { isValidTransactionDigest, SUI_TYPE_ARG } from '@mysten/sui.js';
 import { TokenId, Context } from 'sdklegacy';
 
 import config from 'config';
@@ -23,7 +22,7 @@ export function convertAddress(address: string): string {
 }
 
 function isNative(address: string) {
-  return address === SUI_TYPE_ARG || address === '0x1::aptos_coin::AptosCoin';
+  return address === '0x1::aptos_coin::AptosCoin';
 }
 
 export function trimAddress(address: string, max = 6): string {
@@ -207,9 +206,7 @@ export function hexPrefix(hex: string) {
 }
 
 export function isValidTxId(chain: Chain, tx: string) {
-  if (chain === 'Sui') {
-    return isValidTransactionDigest(tx);
-  } else if (isGatewayChain(chain as any) || chain === 'Sei') {
+  if (isGatewayChain(chain as any) || chain === 'Sei') {
     return isHexString(hexPrefix(tx), 32);
   } else {
     if (tx.startsWith('0x') && tx.length === 66) return true;

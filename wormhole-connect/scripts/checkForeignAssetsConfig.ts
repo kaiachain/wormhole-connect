@@ -43,9 +43,6 @@ import {
 } from '../src/config/types';
 
 import evm from '@wormhole-foundation/sdk/evm';
-import solana from '@wormhole-foundation/sdk/solana';
-import aptos from '@wormhole-foundation/sdk/aptos';
-import sui from '@wormhole-foundation/sdk/sui';
 
 const WORMCHAIN_ERROR_MESSAGES = [
   '3104 RPC not configured',
@@ -62,7 +59,7 @@ const checkEnvConfig = async (
   chainsConfig: ChainsConfig,
 ) => {
   let recommendedUpdates: TokenAddressesByChain = {};
-  const wh = await wormhole(env, [evm, solana, aptos, sui]);
+  const wh = await wormhole(env, [evm]);
 
   for (const [tokenKey, tokenConfig] of Object.entries(tokensConfig)) {
     const nativeChain = wh.getChain(tokenConfig.nativeChain);

@@ -30,11 +30,7 @@ import {
 
 import '@wormhole-foundation/sdk/addresses';
 import evm from '@wormhole-foundation/sdk/evm';
-import solana from '@wormhole-foundation/sdk/solana';
-import aptos from '@wormhole-foundation/sdk/aptos';
-import sui from '@wormhole-foundation/sdk/sui';
-import cosmwasm from '@wormhole-foundation/sdk/cosmwasm';
-import algorand from '@wormhole-foundation/sdk/algorand';
+
 import RouteOperator from 'routes/operator';
 import { getTokenDecimals, getWrappedToken } from 'utils';
 import { CHAIN_ORDER } from './constants';
@@ -228,11 +224,7 @@ export async function newWormholeContextV2(): Promise<WormholeV2<Network>> {
     v2Config.chains![chain] = { rpc, tokenMap };
   }
 
-  return await getWormholeV2(
-    config.network,
-    [evm, solana, aptos, cosmwasm, sui, algorand],
-    v2Config,
-  );
+  return await getWormholeV2(config.network, [evm], v2Config);
 }
 
 // setConfig can be called afterwards to override the default config with integrator-provided config

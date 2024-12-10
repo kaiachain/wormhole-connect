@@ -18,9 +18,7 @@ import {
 } from '@wormhole-foundation/sdk';
 import config from 'config';
 import { NttRoute } from '@wormhole-foundation/sdk-route-ntt';
-import { Connection } from '@solana/web3.js';
-import { PublicKey } from '@solana/web3.js';
-import * as splToken from '@solana/spl-token';
+
 import { getTokenDecimals, getWrappedToken } from 'utils';
 import { WORMSCAN } from 'config/constants';
 
@@ -263,26 +261,7 @@ const parseTokenBridgeReceipt = async (
   }
 
   if (payload.to) {
-    if (receipt.to === 'Solana') {
-      if (!config.rpcs.Solana) {
-        throw new Error('Missing Solana RPC');
-      }
-      // the recipient on the VAA is the ATA
-      const ata = payload.to.address.toNative(receipt.to).toString();
-      const connection = new Connection(config.rpcs.Solana);
-      try {
-        const account = await splToken.getAccount(
-          connection,
-          new PublicKey(ata),
-        );
-        txData.recipient = account.owner.toBase58();
-      } catch (e) {
-        console.error(e);
-        txData.recipient = ata;
-      }
-    } else {
-      txData.recipient = payload.to.address.toNative(receipt.to).toString();
-    }
+    txData.recipient = payload.to.address.toNative(receipt.to).toString();
   }
 
   return txData as TransferInfo;
@@ -330,23 +309,8 @@ const parseCCTPReceipt = async (
   txData.receiveAmount = txData.amount;
 
   txData.sender = payload.messageSender.toNative(receipt.from).toString();
-  if (receipt.to === 'Solana') {
-    if (!config.rpcs.Solana) {
-      throw new Error('Missing Solana RPC');
-    }
-    // the recipient on the VAA is the ATA
-    const ata = payload.mintRecipient.toNative(receipt.to).toString();
-    const connection = new Connection(config.rpcs.Solana);
-    try {
-      const account = await splToken.getAccount(connection, new PublicKey(ata));
-      txData.recipient = account.owner.toBase58();
-    } catch (e) {
-      console.error(e);
-      txData.recipient = ata;
-    }
-  } else {
-    txData.recipient = payload.mintRecipient.toNative(receipt.to).toString();
-  }
+
+  txData.recipient = payload.mintRecipient.toNative(receipt.to).toString();
 
   // The attestation doesn't have the destination token address, but we can deduce which it is
   // just based off the destination chain

@@ -18,7 +18,6 @@ import {
 
 import '@wormhole-foundation/sdk-definitions-ntt';
 import '@wormhole-foundation/sdk-evm-ntt';
-import '@wormhole-foundation/sdk-solana-ntt';
 import { maybeLogSdkError } from 'utils/errors';
 
 export interface TxInfo {

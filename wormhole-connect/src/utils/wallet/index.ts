@@ -24,15 +24,6 @@ import {
   EvmUnsignedTransaction,
   EvmChains,
 } from '@wormhole-foundation/sdk-evm';
-import {
-  SuiUnsignedTransaction,
-  SuiChains,
-} from '@wormhole-foundation/sdk-sui';
-import {
-  AptosUnsignedTransaction,
-  AptosChains,
-} from '@wormhole-foundation/sdk-aptos';
-import { SolanaUnsignedTransaction } from '@wormhole-foundation/sdk-solana';
 
 export enum TransferWallet {
   SENDING = 'sending',
@@ -226,28 +217,6 @@ export const signAndSendTransaction = async (
       options,
     );
     return tx;
-  } else if (chainConfig.context === Context.SOLANA) {
-    const solana = await import('utils/wallet/solana');
-    const signature = await solana.signAndSendTransaction(
-      request as SolanaUnsignedTransaction<Network>,
-      wallet,
-      options,
-    );
-    return signature;
-  } else if (chainConfig.context === Context.SUI) {
-    const sui = await import('utils/wallet/sui');
-    const tx = await sui.signAndSendTransaction(
-      request as SuiUnsignedTransaction<Network, SuiChains>,
-      wallet,
-    );
-    return tx.id;
-  } else if (chainConfig.context === Context.APTOS) {
-    const aptos = await import('utils/wallet/aptos');
-    const tx = await aptos.signAndSendTransaction(
-      request as AptosUnsignedTransaction<Network, AptosChains>,
-      wallet,
-    );
-    return tx.id;
   } else {
     throw new Error('unimplemented');
   }
@@ -294,18 +263,6 @@ export const getWalletOptions = async (
   } else if (config.context === Context.ETH) {
     const evm = await import('utils/wallet/evm');
     return Object.values(mapWallets(evm.wallets, Context.ETH));
-  } else if (config.context === Context.SOLANA) {
-    const solana = await import('utils/wallet/solana');
-    const solanaWallets = solana.fetchOptions();
-    return Object.values(mapWallets(solanaWallets, Context.SOLANA));
-  } else if (config.context === Context.SUI) {
-    const suiWallet = await import('utils/wallet/sui');
-    const suiOptions = await suiWallet.fetchOptions();
-    return Object.values(mapWallets(suiOptions, Context.SUI));
-  } else if (config.context === Context.APTOS) {
-    const aptosWallet = await import('utils/wallet/aptos');
-    const aptosOptions = aptosWallet.fetchOptions();
-    return Object.values(mapWallets(aptosOptions, Context.APTOS));
   }
   return [];
 };
